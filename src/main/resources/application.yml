@@ -1,0 +1,12 @@
+server:
+  port: 8838
+spring:
+  profiles.active: development
+  pid:
+    file: shared/tmp/pids/server-gateway.pid
+---
+spring:
+  profiles: test
+---
+spring:
+  profiles: production

@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: server-gateway
+  cloud:
+    config:
+      # 如果不设置此值，则系统设置此值为 spring.profiles.active
+      # profile: ${spring.profiles.active}
+      label: master
+      # true: 如果访问配置中心失败，则停止启动服务
+      fail-fast: true
+      discovery:
+        # 默认false，设为true表示使用注册中心中的configserver配置而不自己配置configserver的uri
+        enabled: true
+        serviceId: server-config
+      # 配置重试，默认是重试6次，最初是延迟1s再次重试，如果再失败，则延迟1.1*1s、1.1*1.1*1s、… 。可以使用这个配置
+      retry:
+        initial-interval: 2000
+        # 最多重试次数
+        max-attempts: 6
+        # 最大重试间隔
+        max-interval: 4000
+        # 每次重试时间是之前的倍数
+        multiplier: 1.2
+eureka:
+  client:
+    # 表示是否从eureka服务器获取注册信息
+    fetchRegistry: true
+    # 客户端从Eureka Server集群里更新Eureka Server信息的频率
+    eureka-service-url-poll-interval-seconds: 60
+    # 定义从注册中心获取注册服务的信息
+    registry-fetch-interval-seconds: 5
+    # 设置eureka服务器所在的地址，查询服务和注册服务都需要依赖这个地址
+    serviceUrl:
+      # defaultZone: http://127.0.0.1:10761/eureka/
+      # 设置eureka服务器所在的地址，可以同时向多个服务注册服务
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    #hostname: localhost
+    preferIpAddress: true
+    # 心跳间隔
+    lease-renewal-interval-in-seconds: 3
+    # 服务失效时间： 如果多久没有收到请求，则可以删除服务
+    lease-expiration-duration-in-seconds: 7
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
